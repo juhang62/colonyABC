@@ -5,11 +5,11 @@ x = linspace(0,700,701);
 t = [16.2000   20.7000   24.6000   28.5000];
 %t = tobs - tobs(1);
 %t = [0 1 2 3];
-resume_flag=0;
+resume_flag=1;
 if resume_flag==1
     load('resume.mat')
-    epss=ep*0.95.^(1:500);
-    npar=500;
+    epss=ep*0.95.^(1:146);
+    wnew=w;
 else
     a=1;b=1;D=1;
     theta=[a;b;D];
