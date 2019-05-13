@@ -8,14 +8,15 @@ t = [16.2000   20.7000   24.6000   28.5000];
 resume_flag=0;
 sig_q=1;
 if resume_flag==1
-    load('resume.mat')
-    epss=ep*0.7.^(1:146);
+    load('resume-ep100000.mat')
+    epss=ep*0.7.^(1:3);
     wnew=w;
 else
     a=1;b=1;D=1;
     theta=[a;b;D];
-    epss=3e6*0.7.^(1:150);
-    npar=500;
+    %epss=3e6*0.7.^(1:150);
+    epss=linspace(3e6,1e5,8);
+    npar=1024;
     thetapop=zeros(3,npar);
     w=ones(npar,1);
     wnew=w;
@@ -29,7 +30,7 @@ for ieps=1:length(epss)
     ep=epss(ieps)
     xini=xo{1};
     yini=yo{1};
-    parfor ipar=1:npar
+    for ipar=1:npar
         d=1e10;theta=zeros(3,1);
         rej=0;
         while d>ep || any(theta<=0) || any(theta>=20)
@@ -67,8 +68,12 @@ for ieps=1:length(epss)
     end
     thetapop=thetapopnew;
     mdlpop=mdlpopnew;
-    w=wnew/(sum(wnew));
-    save('resume','thetapop','mdlpop','w','ep','npar')
+    ind1 = (mdlpop==1);
+    wnew(ind1) = wnew(ind1)/(sum(wnew(ind1)));
+    wnew(~ind1)= wnew(~ind1)/(sum(wnew(~ind1)));
+    w=wnew;
+    fname=strcat('resume-ep',num2str(epss(ieps),'%d'));
+    save(fname,'thetapop','mdlpop','w','ep','npar')
 end
 
 
