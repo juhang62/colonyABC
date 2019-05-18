@@ -8,7 +8,7 @@ t = [16.2000   20.7000   24.6000   28.5000];
 resume_flag=1;
 if resume_flag==1
     load('resume.mat')
-    epss=ep*0.95.^(1:146);
+    epss=ep*0.98.^(1:100);
     wnew=w;
 else
     a=1;b=1;D=1;
@@ -23,7 +23,7 @@ end
 
 for ieps=1:length(epss)
     %ieps
-    ep=epss(ieps);
+    ep=epss(ieps)
     xini=xo{1};
     yini=yo{1};
     parfor ipar=1:npar

@@ -5,12 +5,13 @@ x = linspace(0,800,801);
 t = [16.2000   20.7000   24.6000   28.5000];
 %t = tobs - tobs(1);
 %t = [0 1 2 3];
-resume_flag=0;
+resume_flag=1;
 sig_q=1;
 if resume_flag==1
-    load('resume-ep100000.mat')
-    epss=ep*0.7.^(1:3);
+    load('resume.mat')
+    epss=ep*0.85.^(1:3);
     wnew=w;
+    mdlpopnew=mdlpop;
 else
     a=1;b=1;D=1;
     theta=[a;b;D];
@@ -30,7 +31,7 @@ for ieps=1:length(epss)
     ep=epss(ieps)
     xini=xo{1};
     yini=yo{1};
-    for ipar=1:npar
+    parfor ipar=1:npar
         d=1e10;theta=zeros(3,1);
         rej=0;
         while d>ep || any(theta<=0) || any(theta>=20)
@@ -51,7 +52,7 @@ for ieps=1:length(epss)
             d = dist(x,sol,xo,yo);
             if d>ep
                 rej=rej+1;
-                if rej>200
+                if rej>300
                     error('fuck')
                 end
                 continue
@@ -72,7 +73,7 @@ for ieps=1:length(epss)
     wnew(ind1) = wnew(ind1)/(sum(wnew(ind1)));
     wnew(~ind1)= wnew(~ind1)/(sum(wnew(~ind1)));
     w=wnew;
-    fname=strcat('resume-ep',num2str(epss(ieps),'%d'));
+    fname=strcat('resume-ep',num2str(round(epss(ieps)),'%d'));
     save(fname,'thetapop','mdlpop','w','ep','npar')
 end
 

@@ -82,7 +82,7 @@ c = 1;
 a=theta(1);
 b=theta(2);
 D=theta(3);
-f = D*u(1) .* DuDx;
+f = D*u(1)^2 .* DuDx;
 %s = [u(2)*tanh(u(1))-0.1*u(1); -u(2)*tanh(u(1)); 0.1*u(1)];
 s = b*tanh(a*u);
 end
