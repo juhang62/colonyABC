@@ -9,13 +9,13 @@ resume_flag=0;
 sig_q=1;
 if resume_flag==1
     load('resume.mat')
-    epss=ep*0.7.^(1:146);
+    epss=ep*0.9.^(1:20);
     wnew=w;
 else
     a=1;b=1;D=1;
     theta=[a;b;D];
     epss=3e6*0.7.^(1:150);
-    npar=10;
+    npar=500;
     thetapop=zeros(3,npar);
     w=ones(npar,1);
     wnew=w;
@@ -47,7 +47,8 @@ for ieps=1:length(epss)
             if d>ep
                 rej=rej+1;
                 if rej>200
-                    error('fuck')
+                    disp('fuck')
+		    quit
                 end
                 continue
             end
@@ -82,7 +83,8 @@ c = 1;
 a=theta(1);
 b=theta(2);
 D=theta(3);
-f = D*u(1)^2 .* DuDx;
+uc=200;
+f =uc * D* (u/uc)^2 .* DuDx;
 %s = [u(2)*tanh(u(1))-0.1*u(1); -u(2)*tanh(u(1)); 0.1*u(1)];
 s = b*tanh(a*u);
 end
