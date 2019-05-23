@@ -7,6 +7,7 @@ t = [16.2000   20.7000   24.6000   28.5000];
 %t = [0 1 2 3];
 resume_flag=0;
 sig_q=1;
+n_para=4;
 if resume_flag==1
     load('resume.mat')
     epss=ep*0.9.^(1:20);
@@ -15,8 +16,8 @@ else
     a=1;b=1;D=1;
     theta=[a;b;D];
     epss=3e6*0.7.^(1:150);
-    npar=500;
-    thetapop=zeros(3,npar);
+    npar=5;
+    thetapop=zeros(n_para,npar);
     w=ones(npar,1);
     wnew=w;
     thetapopnew=thetapop;
@@ -27,16 +28,16 @@ for ieps=1:length(epss)
     ep=epss(ieps)
     xini=xo{1};
     yini=yo{1};
-    parfor ipar=1:npar
-        d=1e10;theta=zeros(3,1);
+    for ipar=1:npar
+        d=1e10;theta=zeros(n_para,1);
         rej=0;
         while d>ep || any(theta<=0) || any(theta>=20)
             if ieps==1 && ~resume_flag
-                theta=rand(3,1)*20;
+                theta=rand(n_para,1)*20;
             else
                 ind=randsample(npar,1,true,w);
                 theta=thetapop(:,ind);
-                theta=theta+normrnd(0,sig_q,3,1);
+                theta=theta+normrnd(0,sig_q,n_para,1);
                 if any(theta<=0) || any(theta>=20)
                     rej=rej+1;
                     continue
@@ -48,7 +49,7 @@ for ieps=1:length(epss)
                 rej=rej+1;
                 if rej>200
                     disp('fuck')
-		    quit
+                    quit
                 end
                 continue
             end
@@ -83,8 +84,9 @@ c = 1;
 a=theta(1);
 b=theta(2);
 D=theta(3);
-uc=200;
-f =uc * D* (u/uc)^2 .* DuDx;
+uc=theta(4)*3;
+Dc=1;
+f =Dc * D* double(u>=0)*u .* DuDx;
 %s = [u(2)*tanh(u(1))-0.1*u(1); -u(2)*tanh(u(1)); 0.1*u(1)];
 s = b*tanh(a*u);
 end
